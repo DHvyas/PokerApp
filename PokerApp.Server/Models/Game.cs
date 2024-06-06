@@ -21,6 +21,6 @@ public class Game
     public int? CurrentTurnUserID { get; set; }
 
     [ForeignKey("CurrentTurnUserID")]
-    public required User CurrentTurnUser { get; set; }
+    public User? CurrentTurnUser { get; set; }
 }
 

@@ -1,7 +1,9 @@
 ﻿namespace PokerApp.Server.Models;
+
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-public class User
+public class User : IdentityUser
 {
     [Key]
     public int UserID { get; set; }
