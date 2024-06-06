@@ -8,63 +8,92 @@ using PokerApp.Server.Models;
 namespace PokerApp.Server.Services;
 public class UserService : IUserService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IUserRepository _userRepository;
 
-    public UserService(ApplicationDbContext context)
+    public UserService(IUserRepository userRepository)
     {
-        _context = context;
+        _userRepository = userRepository;
     }
 
-    public async Task<bool> LoginAsync(LoginRequest loginRequest)
+    public async Task<User> LoginAsync(LoginRequest loginRequest)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginRequest.Email);
+        var user = await GetUserAsync(loginRequest.Email);
         if (user == null)
-            return false;
+            return user;
 
-        return BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.PasswordHash);
+        var verify = BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.PasswordHash);
+        if(!verify)
+            return null;
+        return user;
     }
-    public async Task<User> GetUserAsync(int userId)
+    public async Task<User> SignUpAsync(User newUser)
     {
-        return await _context.Users.FindAsync(userId);
+        try
+        {
+            return await CreateUserAsync(newUser);
+        }
+        catch (Exception ex)
+        {
+            // Add Logging Later
+            return null;
+        }
     }
-
-    public async Task<List<User>> GetAllUsersAsync()
+    private async Task<User> GetUserAsync(int userId)
     {
-        return await _context.Users.ToListAsync();
+        //return await _context.Users.FindAsync(userId);
+        throw new NotImplementedException();
     }
-
-    public async Task<User> CreateUserAsync(User newUser)
+    private async Task<User> GetUserAsync(string userName)
     {
-        newUser.PasswordHash = HashPassword(newUser.PasswordHash);
-        _context.Users.Add(newUser);
-        await _context.SaveChangesAsync();
-        return newUser;
+        return await _userRepository.GetUserAsync(userName);
     }
-
-    public async Task<bool> UpdateUserAsync(int userId, User updatedUser)
+    private async Task<List<User>> GetAllUsersAsync()
     {
-        var user = await _context.Users.FindAsync(userId);
-        if (user == null)
-            return false;
-
-        user.Username = updatedUser.Username;
-        user.Email = updatedUser.Email;
-        user.PasswordHash = updatedUser.PasswordHash;
-        user.ProfilePicture = updatedUser.ProfilePicture;
-
-        await _context.SaveChangesAsync();
-        return true;
+        //return await _context.Users.ToListAsync();
+        throw new NotImplementedException();
     }
 
-    public async Task<bool> DeleteUserAsync(int userId)
+    private async Task<User> CreateUserAsync(User newUser)
     {
-        var user = await _context.Users.FindAsync(userId);
-        if (user == null)
-            return false;
+        try
+        {
+            newUser.PasswordHash = HashPassword(newUser.PasswordHash);
+            await _userRepository.PostUserAsync(newUser);
+            return newUser;
+        }
+        catch (Exception ex)
+        {
+            //Add logging
+            return null;
+        }
+    }
 
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
-        return true;
+    private async Task<bool> UpdateUserAsync(int userId, User updatedUser)
+    {
+        /*       var user = await _context.Users.FindAsync(userId);
+               if (user == null)
+                   return false;
+
+               user.UserName = updatedUser.UserName;
+               user.Email = updatedUser.Email;
+               user.PasswordHash = updatedUser.PasswordHash;
+               user.ProfilePicture = updatedUser.ProfilePicture;
+
+               await _context.SaveChangesAsync();
+               return true;*/
+        throw new NotImplementedException();
+    }
+
+    private async Task<bool> DeleteUserAsync(int userId)
+    {
+        /*        var user = await _context.Users.FindAsync(userId);
+                if (user == null)
+                    return false;
+
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                return true;*/
+        throw new NotImplementedException();
     }
     private string HashPassword(string password)
     {

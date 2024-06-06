@@ -3,14 +3,11 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-public class User : IdentityUser
+public class User : IdentityUser<int>
 {
     [Key]
     public int UserID { get; set; }
 
-    [Required]
-    [StringLength(50)]
-    public required string Username { get; set; }
 
     [Required]
     [StringLength(100)]

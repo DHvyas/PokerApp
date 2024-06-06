@@ -17,10 +17,7 @@ public class Game
     public required string Status { get; set; }
 
     public decimal PotAmount { get; set; }
-
-    public int? CurrentTurnUserID { get; set; }
-
     [ForeignKey("CurrentTurnUserID")]
-    public User? CurrentTurnUser { get; set; }
+    public int? CurrentTurnUserID { get; set; }
 }
 

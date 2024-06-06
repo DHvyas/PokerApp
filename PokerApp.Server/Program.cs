@@ -1,9 +1,14 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 using PokerApp.Server.Data;
 using PokerApp.Server.Interfaces;
 using PokerApp.Server.Models;
+using PokerApp.Server.Repositories;
 using PokerApp.Server.Services;
+using System.Runtime.InteropServices;
+using System.Text;
 
 public class Startup
 {
@@ -20,14 +25,30 @@ public class Startup
         services.AddControllers();
 
         // Configure DbContext with connection string
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+        services.Configure<DatabaseSettings>(Configuration.GetSection("ConnectionStrings"));
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGameService, GameService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IHandService, HandService>();
         services.AddAuthorization();
-        services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme).AddBearerToken(IdentityConstants.BearerScheme);
-        services.AddIdentityCore<User>().AddEntityFrameworkStores<ApplicationDbContext>().AddApiEndpoints();
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = "Bearer";
+            options.DefaultChallengeScheme = "Bearer";
+        }).AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new()
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = Configuration["JwtBearer:ValidIssuer"],
+                ValidAudience = Configuration["JwtBearer:ValidAudience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtBearer:IssuerSigningKey"]!))
+            };
+        }).AddIdentityCookies();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,6 +60,8 @@ public class Startup
         app.UseHttpsRedirection();
 
         app.UseRouting();
+
+        app.UseAuthentication(); // Add this line to enable authentication
 
         app.UseAuthorization();
 
@@ -63,3 +86,4 @@ public class Program
                 webBuilder.UseStartup<Startup>();
             });
 }
+
