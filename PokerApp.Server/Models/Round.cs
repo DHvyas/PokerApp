@@ -22,4 +22,11 @@ public class Round
     [ForeignKey("GameID")]
     public Game Game { get; set; }
 }
+public enum RoundName
+{
+    PreFlop = 1,
+    Flop = 2,
+    Turn = 3,
+    River = 4
+}
 

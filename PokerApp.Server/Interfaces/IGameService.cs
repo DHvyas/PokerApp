@@ -11,7 +11,7 @@ public interface IGameService
     Task<bool> UpdateGameAsync(int gameId, Game updatedGame);
     Task<bool> DeleteGameAsync(int gameId);
     Task<bool> JoinGameAsync(int gameId, int userId, decimal initialChips);
-    Task<bool> StartGameAsync(int gameId);
+    Task<bool> StartGameAsync(int gameId, int userId);
     Task<bool> PerformActionAsync(int gameId, int userId, string actionType, decimal amount);
     Task<bool> EndRoundAsync(int gameId);
 }

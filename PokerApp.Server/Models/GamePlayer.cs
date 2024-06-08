@@ -13,12 +13,6 @@ public class GamePlayer
 
     public bool IsActive { get; set; } = true;
 
-    public decimal InitialChips { get; set; }
-
-    [ForeignKey("GameID")]
-    public required Game Game { get; set; }
-
-    [ForeignKey("UserID")]
-    public required User User { get; set; }
+    public decimal Chips { get; set; }
 }
 

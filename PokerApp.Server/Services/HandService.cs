@@ -5,9 +5,21 @@ namespace PokerApp.Server.Services
 {
     public class HandService : IHandService
     {
-        public Task<Hand> DealHandAsync(int gamePlayerId, string card1, string card2)
+        private readonly IDealerService _dealerService;
+        private readonly IHandRepository _handRepository;
+        private Hand hand;
+        public HandService(IDealerService dealerService, IHandRepository handRepository)
         {
-            throw new NotImplementedException();
+            _dealerService = dealerService;
+            _handRepository = handRepository;
+        }
+        public async void DealHandAsync(int gamePlayerId)
+        {
+            hand = new Hand();
+            hand.GamePlayerID = gamePlayerId;
+            hand.Card1 = _dealerService.DealCard().ToString();
+            hand.Card2 = _dealerService.DealCard().ToString();
+            hand.HandID = await _handRepository.PostHandAsync(hand);
         }
 
         public Task<bool> DeleteHandAsync(int handId)

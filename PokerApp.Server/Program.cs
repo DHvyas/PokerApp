@@ -1,13 +1,9 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using PokerApp.Server.Data;
 using PokerApp.Server.Interfaces;
-using PokerApp.Server.Models;
 using PokerApp.Server.Repositories;
 using PokerApp.Server.Services;
-using System.Runtime.InteropServices;
 using System.Text;
 
 public class Startup
@@ -49,11 +45,21 @@ public class Startup
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtBearer:IssuerSigningKey"]!))
             };
         }).AddIdentityCookies();
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowOrigin", builder =>
+            {
+                builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            });
+        });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app)
     {
+        app.UseCors("AllowOrigin");
         app.UseDefaultFiles();
         app.UseStaticFiles();
 
@@ -70,6 +76,10 @@ public class Startup
             endpoints.MapControllers();
             endpoints.MapFallbackToFile("/index.html");
         });
+        app.UseHttpsRedirection();
+        app.UseStaticFiles();
+
+
     }
 }
 public class Program

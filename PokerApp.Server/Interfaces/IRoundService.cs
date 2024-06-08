@@ -4,7 +4,7 @@ using PokerApp.Server.Models;
 
 public interface IRoundService
 {
-    Task<Round> StartRoundAsync(int gameId, string roundName);
+    void StartRoundAsync(int gameId, int roundNumber);
     Task<bool> EndRoundAsync(int roundId);
 }
 

@@ -4,7 +4,7 @@ using PokerApp.Server.Models;
 
 public interface IHandService
 {
-    Task<Hand> DealHandAsync(int gamePlayerId, string card1, string card2);
+    void DealHandAsync(int gamePlayerId);
     Task<bool> UpdateHandAsync(int handId, string newCard1, string newCard2);
     Task<bool> DeleteHandAsync(int handId);
 }

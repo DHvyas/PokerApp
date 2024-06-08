@@ -45,13 +45,5 @@ namespace PokerApp.Server.Controllers
                 return BadRequest();
             return Ok(user);
         }
-        [Authorize]
-        [HttpGet]
-        [Route("all")]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            var users = "This is a test";
-            return Ok(users);
-        }
     }
 }
