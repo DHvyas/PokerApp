@@ -21,6 +21,7 @@ public class Round
 
     [ForeignKey("GameID")]
     public Game Game { get; set; }
+    public Decimal RoundAmount { get; set; }
 }
 public enum RoundName
 {

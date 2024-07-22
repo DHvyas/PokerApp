@@ -5,28 +5,27 @@ using PokerApp.Server.Data;
 using PokerApp.Server.Interfaces;
 using PokerApp.Server.Models;
 using System.Data;
-using System.Runtime.CompilerServices;
 
 namespace PokerApp.Server.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class BetRepository : IBetRepository
     {
         private readonly string _connectionString;
 
-        public UserRepository(IOptions<DatabaseSettings> settings)
+        public BetRepository(IOptions<DatabaseSettings> settings)
         {
             _connectionString = settings.Value.DefaultConnection;
         }
 
         private IDbConnection Connection => new SqlConnection(_connectionString);
-        public async Task<int> PostUserAsync(User user)
+        public async Task<int> PostBetAsync(Bet bet)
         {
             try
             {
                 using (IDbConnection dbConnection = Connection)
                 {
-                    string query = $"INSERT INTO Users (Username, Email, PasswordHash) VALUES ('{user.UserName}', '{user.Email}', '{user.PasswordHash}')";
-                    return await dbConnection.ExecuteScalarAsync<int>(query, user);
+                    string query = $"INSERT INTO Bets(RoundID, GamePlayerID, BetAmount, BetTime) VALUES ({bet.RoundID}, {bet.GamePlayerID}, {bet.BetAmount}, '{bet.BetTime}')";
+                    return await dbConnection.ExecuteScalarAsync<int>(query, bet);
                 }
             }
             catch (Exception ex)
@@ -35,15 +34,15 @@ namespace PokerApp.Server.Repositories
                 return 0;
             }
         }
-        public async Task<User> GetUserAsync(int userId)
+        public async Task<Bet> GetBetAsync(int userId, int gameId)
         {
             try
             {
-                using(IDbConnection dbConnection = Connection)
+                using (IDbConnection dbConnection = Connection)
                 {
-                    string query = $"SELECT * FROM Users where UserID = {userId}";
-                    var user = await dbConnection.QueryFirstOrDefaultAsync<User>(query);
-                    return user;
+                    string query = $"SELECT * FROM Bets WHERE UserID = {userId} AND GameID = {gameId}";
+                    var bet = await dbConnection.QueryFirstOrDefaultAsync<Bet>(query);
+                    return bet;
                 }
             }
             catch (Exception)
@@ -51,20 +50,19 @@ namespace PokerApp.Server.Repositories
                 return null;
             }
         }
-        public async Task<User> GetUserAsync(string userName)
+        public async Task<List<Bet>> GetBetsAsync(int gameId)
         {
-            try
+           try
             {
                 using (IDbConnection dbConnection = Connection)
                 {
-                    string query = $"SELECT * FROM Users WHERE Username = '{userName}'";
-                    var user = await dbConnection.QueryFirstOrDefaultAsync<User>(query);
-                    return user;
+                    string query = $"SELECT B.* FROM Bets B INNER JOIN Rounds R ON R.RoundID = B.RoundID WHERE R.GameID = {gameId}";
+                    var bets = await dbConnection.QueryAsync<Bet>(query);
+                    return bets.ToList();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //Logging to be implemented
                 return null;
             }
         }

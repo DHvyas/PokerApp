@@ -6,5 +6,6 @@ namespace PokerApp.Server.Interfaces
     {
         Task<int> PostUserAsync(User user);
         Task<User> GetUserAsync(string userName);
+        Task<User> GetUserAsync(int userId);
     }
 }

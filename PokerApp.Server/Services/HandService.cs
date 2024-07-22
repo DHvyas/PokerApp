@@ -21,7 +21,10 @@ namespace PokerApp.Server.Services
             hand.Card2 = _dealerService.DealCard().ToString();
             hand.HandID = await _handRepository.PostHandAsync(hand);
         }
-
+        public async Task<Hand> GetHandAsync(int handId)
+        {
+            return await _handRepository.GetHandAsync(handId);
+        }
         public Task<bool> DeleteHandAsync(int handId)
         {
             throw new NotImplementedException();

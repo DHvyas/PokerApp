@@ -24,7 +24,7 @@ namespace PokerApp.Server.Repositories
             {
                 using (IDbConnection dbConnection = Connection)
                 {
-                    string query = $"INSERT INTO GamePlayers (GameID, UserID, Chips, IsActive) VALUES ({gamePlayer.GameID}, {gamePlayer.UserID}, {gamePlayer.Chips}, {gamePlayer.IsActive})";
+                    string query = $"INSERT INTO GamePlayers (GameID, UserID, Chips, IsActive) VALUES ({gamePlayer.GameID}, {gamePlayer.UserID}, {gamePlayer.Chips}, '{gamePlayer.IsActive}')";
                     return await dbConnection.ExecuteScalarAsync<int>(query, gamePlayer);
                 }
             }
@@ -74,7 +74,7 @@ namespace PokerApp.Server.Repositories
             {
                 using (IDbConnection dbConnection = Connection)
                 {
-                    string query = $"SELECT * FROM GamePlayers WHERE GameID = {gameID} AND UserID = {UserID} AND IsActive = 1";
+                    string query = $"SELECT * FROM GamePlayers WHERE GameID = {gameID} AND UserID = {UserID} AND IsActive = 1 ORDER BY UserID";
                     var gamePlayer = await dbConnection.QueryFirstOrDefaultAsync<GamePlayer>(query);
                     return gamePlayer;
                 }
@@ -91,7 +91,7 @@ namespace PokerApp.Server.Repositories
             {
                 using (IDbConnection dbConnection = Connection)
                 {
-                    string query = $"UPDATE GamePlayers SET GameID = {gamePlayer.GameID}, UserID = {gamePlayer.UserID}, Chips = {gamePlayer.Chips}, IsActive = {gamePlayer.IsActive} WHERE GamePlayerID = {gamePlayer.GamePlayerID}";
+                    string query = $"UPDATE GamePlayers SET GameID = {gamePlayer.GameID}, UserID = {gamePlayer.UserID}, Chips = {gamePlayer.Chips}, IsActive = '{gamePlayer.IsActive}' WHERE GamePlayerID = {gamePlayer.GamePlayerID}";
                     await dbConnection.QueryFirstOrDefaultAsync<GamePlayer>(query, gamePlayer);
                     return gamePlayer;
                 }
@@ -100,5 +100,7 @@ namespace PokerApp.Server.Repositories
             {
                 //Logging to be implemented
                 return null;
+            }
+        }
     }
 }

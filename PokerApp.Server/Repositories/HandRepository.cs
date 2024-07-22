@@ -2,12 +2,13 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using PokerApp.Server.Data;
+using PokerApp.Server.Interfaces;
 using PokerApp.Server.Models;
 using System.Data;
 
 namespace PokerApp.Server.Repositories
 {
-    public class HandRepository
+    public class HandRepository : IHandRepository
     {
         private readonly string _connectionString;
 
@@ -31,6 +32,22 @@ namespace PokerApp.Server.Repositories
             {
                 //Logging to be implemented
                 return 0;
+            }
+        }
+        public async Task<Hand> GetHandAsync(int handId)
+        {
+            try
+            {
+                using (IDbConnection dbConnection = Connection)
+                {
+                    string query = $"SELECT * FROM HANDS WHERE HandID = {handId}";
+                    var hand = await dbConnection.QueryFirstOrDefaultAsync<Hand>(query);
+                    return hand;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
     }

@@ -6,5 +6,7 @@ public interface IRoundService
 {
     void StartRoundAsync(int gameId, int roundNumber);
     Task<bool> EndRoundAsync(int roundId);
+    Task<Round> GetRoundAsync(int roundId);
+    Task<Round> GetLatestRoundAsync(int gameId);
 }
 

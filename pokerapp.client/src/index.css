@@ -13,10 +13,39 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+
+.header {
+    background: linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%);
+    color: #242424;
+}
+.footer {
+    background: linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%);
+}
+
+.signup-container{
+    margin: 2.5%;
+    border: 1px solid #747bff;
+    border-radius: 16px;
+    background-color: #f9f9f9;
+}
+.login-container{
+    margin: 2.5%;
+    border: 1px solid #747bff;
+    border-radius: 16px;
+    background-color: #f9f9f9;
+}
+.flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+    font-weight: 500;
+    color: #646cff;
+    text-decoration: inherit;
 }
 a:hover {
   color: #535bf2;
@@ -24,10 +53,9 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
+  display: block;
   place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  width: 100%;
 }
 
 h1 {

@@ -32,6 +32,8 @@ namespace PokerApp.Server.Controllers
                 return Unauthorized();
             var response = new LoginResponse();
             response.Token = _tokenService.CreateToken(user);
+            response.UserId = user.UserID;
+            response.UserName = user.UserName;
             response.Success = String.IsNullOrEmpty(response.Token) ? false : true;
             return Ok(response);
         }

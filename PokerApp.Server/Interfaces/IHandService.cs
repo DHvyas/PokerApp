@@ -7,5 +7,6 @@ public interface IHandService
     void DealHandAsync(int gamePlayerId);
     Task<bool> UpdateHandAsync(int handId, string newCard1, string newCard2);
     Task<bool> DeleteHandAsync(int handId);
+    Task<Hand> GetHandAsync(int handId);
 }
 

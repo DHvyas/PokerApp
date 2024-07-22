@@ -19,5 +19,6 @@ public class Game
     public decimal PotAmount { get; set; }
     [ForeignKey("CurrentTurnUserID")]
     public int? CurrentTurnUserID { get; set; }
+    public int WinnerUserID { get; set; }
 }
 

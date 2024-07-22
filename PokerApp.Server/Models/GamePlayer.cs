@@ -14,5 +14,6 @@ public class GamePlayer
     public bool IsActive { get; set; } = true;
 
     public decimal Chips { get; set; }
+    public int HandValue { get; set; }
 }
 

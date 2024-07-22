@@ -57,7 +57,7 @@ namespace PokerApp.Server.Repositories
             {
                 using (IDbConnection dbConnection = Connection)
                 {
-                    string query = $"SELECT * FROM ROUNDS WHERE GameID = {gameID} AND EndTime = Null";
+                    string query = $"SELECT * FROM ROUNDS WHERE GameID = {gameID} AND EndTime IS Null";
                     var round = await dbConnection.QueryFirstOrDefaultAsync<Round>(query);
                     return round;
                 }
@@ -74,7 +74,7 @@ namespace PokerApp.Server.Repositories
             {
                 using (IDbConnection dbConnection = Connection)
                 {
-                    string query = $"UPDATE ROUNDS SET RoundNumber = {round.RoundNumber}, RoundName = '{round.RoundName}' EndTime = '{round.EndTime}' WHERE RoundID = {round.RoundID}";
+                    string query = $"UPDATE ROUNDS SET RoundNumber = {round.RoundNumber}, RoundName = '{round.RoundName}', EndTime = '{round.EndTime}' WHERE RoundID = {round.RoundID}";
                     await dbConnection.ExecuteAsync(query, round);
                     return round;
                 }

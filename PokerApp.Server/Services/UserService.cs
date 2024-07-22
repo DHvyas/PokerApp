@@ -4,6 +4,8 @@ using BCrypt.Net;
 using PokerApp.Server.Data;
 using PokerApp.Server.Interfaces;
 using PokerApp.Server.Models;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace PokerApp.Server.Services;
 public class UserService : IUserService
@@ -38,12 +40,26 @@ public class UserService : IUserService
             return null;
         }
     }
-    private async Task<User> GetUserAsync(int userId)
+    public async Task<bool> IsUserExistsAsync(int userId)
     {
-        //return await _context.Users.FindAsync(userId);
-        throw new NotImplementedException();
+        if(await GetUserAsync(userId) == null) return false;
+        return true;
     }
-    private async Task<User> GetUserAsync(string userName)
+    public async Task<User> GetUserAsync(int userId)
+    {
+        try
+        {
+            var user = await _userRepository.GetUserAsync(userId);
+            if (user == null || user.UserID == 0)
+                return null;
+            return user;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+    public async Task<User> GetUserAsync(string userName)
     {
         return await _userRepository.GetUserAsync(userName);
     }

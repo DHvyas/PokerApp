@@ -8,5 +8,8 @@ public interface IUserService
 {
     Task<User> LoginAsync(LoginRequest loginRequest);
     Task<User> SignUpAsync(User newUser);
+    Task<bool> IsUserExistsAsync(int userId);
+    Task<User> GetUserAsync(string userName);
+    Task<User> GetUserAsync(int userId);
 }
 
