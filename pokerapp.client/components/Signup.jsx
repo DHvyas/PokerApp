@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Box, TextField, Button, Typography, Grid, Link } from '@mui/material';
+import { useEffect } from 'react';
 
 
 const Signup = () => {
@@ -9,6 +10,13 @@ const Signup = () => {
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/dashboard');
+        }
+    }, [navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -100,14 +108,16 @@ const Signup = () => {
                     >
                         Sign Up
                     </Button>
-                    <Grid container justifyContent="flex-end">
-                        <Grid item>
-                            <Link href="/login" variant="body2">
-                                Already have an account? Sign in
-                            </Link>
-                        </Grid>
-                    </Grid>
                 </Box>
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    href="/login"
+                    sx={{ mt: 3, mb: 2, background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)' }}
+                >
+                    Login
+                </Button>
             </Box>
         </Container>
         /*<div>

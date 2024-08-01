@@ -45,11 +45,11 @@ namespace PokerApp.Server.Services
                 Card4 = null,
                 Card5 = null
             };
-            _dealerService.ShuffleDeck();
+            _dealerService.ShuffleDeck(gameId);
             //To handle Flop
             if(roundNumber == 2)
             {
-                var cards = _dealerService.DealCards(3);
+                var cards = _dealerService.DealCards(gameId, 3);
                 communityCards.Card1 = cards[0].ToString();
                 communityCards.Card2 = cards[1].ToString();
                 communityCards.Card3 = cards[2].ToString();
@@ -60,11 +60,11 @@ namespace PokerApp.Server.Services
                 communityCards = await _communityCardsRepository.GetCommunityCardsAsync(gameId);
                 if(roundNumber == 4)
                 {
-                    communityCards.Card5 = _dealerService.DealCard().ToString();
+                    communityCards.Card5 = _dealerService.DealCard(gameId).ToString();
                 }
                 else
                 {
-                    communityCards.Card4 = _dealerService.DealCard().ToString();
+                    communityCards.Card4 = _dealerService.DealCard(gameId).ToString();
                 }
                 await _communityCardsRepository.UpdateCommunityCardsAsync(communityCards);
             }

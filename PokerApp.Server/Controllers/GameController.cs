@@ -92,7 +92,8 @@ namespace PokerApp.Server.Controllers
         [Route("performAction")]
         public async Task<IActionResult> PerformAction([FromBody] PerformActionRequest performActionRequest)
         {
-            return await _gameService.PerformActionAsync(performActionRequest.GameId, performActionRequest.UserId, performActionRequest.ActionType, performActionRequest.Amount) ? Ok() : NotFound();
+            var response = await _gameService.PerformActionAsync(performActionRequest.GameId, performActionRequest.UserId, performActionRequest.ActionType, performActionRequest.Amount);
+            return response == null ? NotFound() : Ok(response);
         }
     }
 }

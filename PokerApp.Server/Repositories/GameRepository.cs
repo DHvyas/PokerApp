@@ -90,7 +90,7 @@ namespace PokerApp.Server.Repositories
             {
                 using (IDbConnection dbConnection = Connection)
                 {
-                    string query = $"SELECT * FROM GAMES";
+                    string query = $"SELECT * FROM GAMES WHERE STATUS<>'Ended'";
                     var games = await dbConnection.QueryAsync<Game>(query);
                     return games.ToList();
                 }

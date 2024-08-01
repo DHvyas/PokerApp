@@ -63,6 +63,11 @@ namespace PokerApp.Server.Services
             try
             {
                 var games = await _gameRepository.GetAllGamesAsync();
+                foreach (var game in games)
+                {
+                    var gamePlayers = await _gamePlayerRepository.GetAllGamePlayersAsync(game.GameID);
+                    game.CurrentPlayersCount = gamePlayers.Count;
+                }
                 return games;
             }
             catch (Exception)
@@ -90,6 +95,11 @@ namespace PokerApp.Server.Services
             try
             {
                 var games = await _gameRepository.GetGamesJoinedAsync(userId);
+                foreach (var game in games)
+                {
+                    var gamePlayers = await _gamePlayerRepository.GetAllGamePlayersAsync(game.GameID);
+                    game.CurrentPlayersCount = gamePlayers.Count;
+                }
                 return games;
             }
             catch (Exception)
@@ -132,8 +142,9 @@ namespace PokerApp.Server.Services
             }
         }
 
-        public async Task<bool> PerformActionAsync(int gameId, int userId, string actionType, decimal amount)
+        public async Task<PerformActionResponse> PerformActionAsync(int gameId, int userId, string actionType, decimal amount)
         {
+            var response = new PerformActionResponse();
             try
             {
                 var game = await GetGameAsync(gameId);
@@ -158,6 +169,7 @@ namespace PokerApp.Server.Services
                 if (actionType == "Fold")
                 {
                     gamePlayer.IsActive = false;
+                    response.IsGameOver = true;
                 }
                 else if (actionType == "Bet")
                 {
@@ -192,30 +204,37 @@ namespace PokerApp.Server.Services
                 await _gamePlayerRepository.UpdateGamePlayer(gamePlayer);
                 await _betRepository.PostBetAsync(bet);
                 var listOfGamePlayers = await _gamePlayerRepository.GetAllGamePlayersAsync(gameId);
-                if(await IsRoundComplete(gameId))
+                if (round.RoundNumber.Equals(4))
+                {
+                    response.Message = "Winner is " + await EndGameAsync(gameId);
+                    game.Equals("Ended");
+                    game.Status = "Ended";
+                    response.IsGameOver = true;
+                }
+                if (await IsRoundComplete(gameId))
                 {
                     _roundService.EndRoundAsync(round.RoundID);
-                    _roundService.StartRoundAsync(gameId, round.RoundNumber + 1);
-                    game.CurrentTurnUserID = listOfGamePlayers.Find(x => x.IsActive).UserID;
+                    if (game.Status != "Ended")
+                    {
+                        _roundService.StartRoundAsync(gameId, round.RoundNumber + 1);
+                        game.CurrentTurnUserID = listOfGamePlayers.Find(x => x.IsActive)?.UserID;
+                    }
                 }
                 else
                 {
                     var nextPlayerIndex = (listOfGamePlayers.FindIndex(x => x.UserID == game.CurrentTurnUserID) + 1) % listOfGamePlayers.Count;
                     game.CurrentTurnUserID = listOfGamePlayers[nextPlayerIndex].UserID;
                 }
-                if(round.RoundNumber.Equals(4))
-                {
-                    await EndGameAsync(gameId);
-                    game.Equals("Ended");
-                }
+                
                 await _gameRepository.UpdateGameAsync(game);
             }
             catch (Exception)
             {
-                // Implement logging
-                return false;
+                response.IsSuccess = false;
+                response.Message = "Error";
             }
-            return true;
+            response.IsSuccess = true;
+            return response;
         }
         public async Task<List<User>> GetAllGamePlayerUsersAsync(int gameId)
         {
@@ -261,7 +280,7 @@ namespace PokerApp.Server.Services
                     var listOfGamePlayers = await _gamePlayerRepository.GetAllGamePlayersAsync(gameId);
                     foreach (var player in listOfGamePlayers)
                     {
-                        _handService.DealHandAsync(player.GamePlayerID);
+                        _handService.DealHandAsync(player.GamePlayerID, gameId);
                     }
                     game.CurrentTurnUserID = listOfGamePlayers[0].UserID;
                     await _gameRepository.UpdateGameAsync(game);
@@ -306,7 +325,7 @@ namespace PokerApp.Server.Services
                 var communityCards = await _communityCardsRepository.GetCommunityCardsAsync(gameId);
                 if (hand == null)
                 {
-                    _handService.DealHandAsync(gamePlayer.GamePlayerID);
+                    _handService.DealHandAsync(gamePlayer.GamePlayerID, gameId);
                     hand = await _handService.GetHandAsync(gamePlayer.GamePlayerID);
                 }
 
@@ -357,8 +376,9 @@ namespace PokerApp.Server.Services
             }
         }
 
-        private async Task<bool> EndGameAsync(int gameId)
+        private async Task<string> EndGameAsync(int gameId)
         {
+            var response = "";
             try
             {
                 var game = await GetGameAsync(gameId);
@@ -380,13 +400,14 @@ namespace PokerApp.Server.Services
                 //await _userService.(winnerUser.UserID, winnerUser);
                 game.Status = "Ended";
                 await _gameRepository.UpdateGameAsync(game);
+                response = winnerUser.UserName;
             }
             catch (Exception)
             {
                 //Implement logging
-                return false;
+                return response;
             }
-            return true;
+            return response;
         }
         private int EvaluateHand(Hand hand, CommunityCards communityCards)
         {

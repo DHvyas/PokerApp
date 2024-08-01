@@ -12,7 +12,7 @@
         public Card(string cardString)
         {
             if (cardString.Length != 2)
-                throw new ArgumentException("Card string must be 2 characters long");
+                cardString = ("T" + cardString[cardString.Length - 1]);
             Rank = cardString[0] switch
             {
                 '2' => Rank.Two,

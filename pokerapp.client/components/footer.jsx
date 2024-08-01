@@ -16,39 +16,11 @@ const Footer = () => {
                 <Grid container spacing={4}>
                     <Grid item xs={12} sm={4}>
                         <Typography variant="h6" component="div" gutterBottom>
-                            MyApp
+                            PokerApp
                         </Typography>
                         <Typography variant="body2">
-                            © {new Date().getFullYear()} MyApp. All rights reserved.
+                            © {new Date().getFullYear()} PokerApp. All rights reserved.
                         </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                        <Typography variant="h6" component="div" gutterBottom>
-                            Quick Links
-                        </Typography>
-                        <Link href="#" color="inherit" variant="body2" display="block">
-                            Home
-                        </Link>
-                        <Link href="#" color="inherit" variant="body2" display="block">
-                            About
-                        </Link>
-                        <Link href="#" color="inherit" variant="body2" display="block">
-                            Contact
-                        </Link>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                        <Typography variant="h6" component="div" gutterBottom>
-                            Follow Us
-                        </Typography>
-                        <Link href="#" color="inherit" variant="body2" display="block">
-                            Facebook
-                        </Link>
-                        <Link href="#" color="inherit" variant="body2" display="block">
-                            Twitter
-                        </Link>
-                        <Link href="#" color="inherit" variant="body2" display="block">
-                            Instagram
-                        </Link>
                     </Grid>
                 </Grid>
             </Container>

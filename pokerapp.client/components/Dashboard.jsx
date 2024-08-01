@@ -57,7 +57,16 @@ const Dashboard = () => {
         };
         try {
             const response = await api.post('/api/Game/create', request);
-            navigate(`/game/${response.data.gameID}`);
+            if (response.status === 200) {
+                const joinRequest = {
+                    GameId: response.data.gameID,
+                    InitialChips: initialChips,
+                    UserId: authState.userID
+                };
+                const joinResponse = await api.post('/api/Game/join', joinRequest);
+                if (joinResponse.status === 200)
+                    navigate(`/game/${response.data.gameID}`);
+            }
         } catch (e) {
             console.log(e);
         }
@@ -87,6 +96,15 @@ const Dashboard = () => {
                     mt: 4,
                 }}
             >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        mt: 4,
+                        width: '100%'
+                    }}
+                >
                 <Typography variant="h4" component="h1" gutterBottom>
                     {games?.length > 0 ? "Open Games" : "No Open Games"}
                 </Typography>
@@ -101,6 +119,9 @@ const Dashboard = () => {
                                     <Typography>
                                         {game.status}
                                     </Typography>
+                                    <Typography>
+                                        {game.currentPlayersCount} Players
+                                    </Typography>
                                 </CardContent>
                                 <CardActions>
                                     <Button size="small" color="primary" onClick={() => handleJoinGameClick(game)}>
@@ -110,7 +131,17 @@ const Dashboard = () => {
                             </Card>
                         </Grid>
                     ))}
-                </Grid>
+                    </Grid>
+                </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        mt: 4,
+                        width: '100%'
+                    }}
+                >
                 <Typography variant="h4" component="h1" gutterBottom>
                     {joinedGames?.length > 0 ? "Joined Games" : "No Joined Games"}
                 </Typography>
@@ -125,6 +156,9 @@ const Dashboard = () => {
                                     <Typography>
                                         {game.status}
                                     </Typography>
+                                    <Typography>
+                                        {game.currentPlayersCount} Players
+                                    </Typography>
                                 </CardContent>
                                 <CardActions>
                                     <Button size="small" color="primary" onClick={() =>  navigate(`/game/${game.gameID}`)}>
@@ -134,10 +168,21 @@ const Dashboard = () => {
                             </Card>
                         </Grid>
                     ))}
-                </Grid>
+                    </Grid>
+                </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        mt: 4,
+                        width: '100%'
+                    }}
+                >
                 <Button variant="contained" color="primary" onClick={handleCreateGameClick}>
                     Create New Game
-                </Button>
+                    </Button>
+                </Box>
             </Box>
 
             <Dialog open={open} onClose={handleClose}>
@@ -177,6 +222,17 @@ const Dashboard = () => {
                         variant="outlined"
                         value={newGameName}
                         onChange={(e) => setNewGameName(e.target.value)}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="chips"
+                        label="Initial Chips"
+                        type="number"
+                        fullWidth
+                        variant="outlined"
+                        value={initialChips}
+                        onChange={(e) => setInitialChips(e.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>

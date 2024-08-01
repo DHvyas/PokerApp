@@ -23,18 +23,18 @@ public class Startup
         // Configure DbContext with connection string
         services.Configure<DatabaseSettings>(Configuration.GetSection("ConnectionStrings"));
         services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGameService, GameService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IHandService, HandService>();
         services.AddSingleton<IDealerService, DealerService>();
-        services.AddScoped<IHandRepository, HandRepository>();
-        services.AddScoped<IGameRepository, GameRepository>();
-        services.AddScoped<IGamePlayerRepository, GamePlayerRepository>();
-        services.AddScoped<IRoundRepository, RoundRepository>();
         services.AddScoped<IRoundService, RoundService>();
-        services.AddScoped<ICommunityCardsRepository, CommunityCardsRepository>();
-        services.AddScoped<IBetRepository, BetRepository>();
+        services.AddSingleton<IUserRepository, UserRepository>();
+        services.AddSingleton<IHandRepository, HandRepository>();
+        services.AddSingleton<IGameRepository, GameRepository>();
+        services.AddSingleton<IGamePlayerRepository, GamePlayerRepository>();
+        services.AddSingleton<IRoundRepository, RoundRepository>();
+        services.AddSingleton<ICommunityCardsRepository, CommunityCardsRepository>();
+        services.AddSingleton<IBetRepository, BetRepository>();
         services.AddAuthorization();
         services.AddAuthentication(options =>
         {

@@ -20,5 +20,6 @@ public class Game
     [ForeignKey("CurrentTurnUserID")]
     public int? CurrentTurnUserID { get; set; }
     public int WinnerUserID { get; set; }
+    public int CurrentPlayersCount { get; set; }
 }
 

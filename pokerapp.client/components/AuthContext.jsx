@@ -23,8 +23,13 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('authState', JSON.stringify(newAuthState));
     };
 
+    const logout = () => {
+        setAuthState({ userID: null, token: null, userName: null });
+        localStorage.removeItem('authState');
+    };
+
     return (
-        <AuthContext.Provider value={{ authState, setAuthInfo }}>
+        <AuthContext.Provider value={{ authState, setAuthInfo, logout }}>
             {children}
         </AuthContext.Provider>
     );

@@ -12,7 +12,7 @@ public interface IGameService
     Task<bool> DeleteGameAsync(int gameId);
     Task<bool> JoinGameAsync(int gameId, int userId, decimal initialChips);
     Task<bool> StartGameAsync(int gameId, int userId);
-    Task<bool> PerformActionAsync(int gameId, int userId, string actionType, decimal amount);
+    Task<PerformActionResponse> PerformActionAsync(int gameId, int userId, string actionType, decimal amount);
     Task<bool> EndRoundAsync(int gameId);
     Task<FetchCardsResponse> FetchCardsAsync(int gameId, int userId, string userName);
     Task<List<Game>> GetGamesJoinedAsync(int userId);

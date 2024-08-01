@@ -13,12 +13,12 @@ namespace PokerApp.Server.Services
             _dealerService = dealerService;
             _handRepository = handRepository;
         }
-        public async void DealHandAsync(int gamePlayerId)
+        public async void DealHandAsync(int gamePlayerId, int gameId)
         {
             hand = new Hand();
             hand.GamePlayerID = gamePlayerId;
-            hand.Card1 = _dealerService.DealCard().ToString();
-            hand.Card2 = _dealerService.DealCard().ToString();
+            hand.Card1 = _dealerService.DealCard(gameId).ToString();
+            hand.Card2 = _dealerService.DealCard(gameId).ToString();
             hand.HandID = await _handRepository.PostHandAsync(hand);
         }
         public async Task<Hand> GetHandAsync(int handId)

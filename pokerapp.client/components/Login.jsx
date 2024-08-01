@@ -49,11 +49,6 @@ const Login = () => {
                     alignItems: 'center',
                 }}
             >
-                {error && (
-                    <Typography component="h5" variant="h7" sx={{ color: 'red' }}>
-                        {error}
-                    </Typography>
-                ) }
                 <Typography component="h1" variant="h5" sx={{
                     background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
                     WebkitBackgroundClip: 'text',
@@ -94,14 +89,24 @@ const Login = () => {
                     >
                         Login
                     </Button>
-                    <Grid container justifyContent="flex-end">
-                        <Grid item>
-                            <Link href="/" variant="body2">
-                                Create a new Account? Sign up
-                            </Link>
-                        </Grid>
-                    </Grid>
                 </Box>
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    href="/"
+                    sx={{ mt: 3, mb: 2, background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)' }}
+                >
+                    Create a new account
+                </Button>
+                {error && (
+                    <Typography component="h5" variant="h7" sx={{
+                        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent' }}>
+                        {error}
+                    </Typography>
+                )}
             </Box>
         </Container>
         /*<div className="login-container">

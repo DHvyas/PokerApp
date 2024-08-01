@@ -1,32 +1,39 @@
 ﻿using PokerApp.Server.Interfaces;
 using PokerApp.Server.Models;
+using System.Collections.Concurrent;
 
 namespace PokerApp.Server.Services
 {
     public class DealerService : IDealerService
     {
-        private Deck deck;
+        private readonly ConcurrentDictionary<string, GameSession> _gameSessions;
+
         public DealerService()
         {
-            deck = new Deck();
+            _gameSessions = new ConcurrentDictionary<string, GameSession>();
         }
-        public void ShuffleDeck()
+
+        public void ShuffleDeck(int gameId)
         {
-            deck.Shuffle();
+            var gameSession = GetOrCreateGameSession(gameId);
+            gameSession.ShuffleDeck();
         }
-        public Card DealCard()
+
+        public Card DealCard(int gameId)
         {
-            var card = deck.DrawCard();
-            return card;
+            var gameSession = GetOrCreateGameSession(gameId);
+            return gameSession.DealCard();
         }
-        public List<Card> DealCards(int numberOfCards)
+
+        public List<Card> DealCards(int gameId, int numberOfCards)
         {
-            var cards = new List<Card>();
-            for (int i = 0; i < numberOfCards; i++)
-            {
-                cards.Add(deck.DrawCard());
-            }
-            return cards;
+            var gameSession = GetOrCreateGameSession(gameId);
+            return gameSession.DealCards(numberOfCards);
+        }
+
+        private GameSession GetOrCreateGameSession(int gameId)
+        {
+            return _gameSessions.GetOrAdd(gameId.ToString(), id => new GameSession());
         }
     }
 }
